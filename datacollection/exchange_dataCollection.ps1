@@ -530,12 +530,13 @@ $output | Export-csv -Path $CSVfile -NoTypeInformation -Encoding UTF8
     
     $AllMailbox = Import-Csv -Path $inputCSVFile
     
-    Foreach($Mbx in $AllMailbox)
+    Foreach($user in $allUsers)
     
     {
     
-    $Stats = Get-mailboxStatistics -Identity $Mbx.logonName -WarningAction SilentlyContinue
-    $AdUserLastLogon = Get-ADUser -Identity $Mbx.logonName -Properties LastLogonTimeStamp | Select-Object @{Name="Stamp"; Expression={[DateTime]::FromFileTime($_.lastLogonTimestamp).ToString('yyyy-MM-dd_hh:mm:ss')}}
+    $Mbx = Get-mailbox $user.logonName -resultsize unlimited
+    $Stats = Get-mailboxStatistics -Identity $user.logonName -WarningAction SilentlyContinue
+    $AdUserLastLogon = Get-ADUser -Identity $user.logonName -Properties LastLogonTimeStamp | Select-Object @{Name="Stamp"; Expression={[DateTime]::FromFileTime($_.lastLogonTimestamp).ToString('yyyy-MM-dd_hh:mm:ss')}}
     
     
     
